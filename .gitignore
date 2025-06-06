@@ -2,3 +2,7 @@ node_modules/
 dist/
 NetscriptDefinitions.d.ts
 src/.DS_Store
+.idea/vcs.xml
+.idea/typescript-template.iml
+.idea/modules.xml
+.idea/inspectionProfiles/Project_Default.xml
