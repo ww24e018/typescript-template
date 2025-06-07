@@ -8,13 +8,22 @@ function portHadStuff(portReadResult) {
 
 export async function main(ns) {
     let daemonTicks = 0;
+    ns.disableLog("sleep")
+    // eslint-disable-next-line no-constant-condition
     while(true) {
-        ns.printf(`i am a daemon. (ticking: ${daemonTicks})`);
+        if ((daemonTicks % 100) == 0) ns.printf(`i am a daemon. (ticking: ${daemonTicks})`);
         let portReadResult = ns.readPort(2);
         while (portHadStuff(portReadResult)) {
-            // lets test this first
+            // let's test this first
             ns.printf(`Read from port: `);
             ns.printf(JSON.stringify(portReadResult,null,"\t"));
+            try {
+                let {task:taskname, data:taskdata} = portReadResult
+                if ("eval" == taskname) ns.printf(JSON.stringify(eval(taskdata)));
+            } catch (e) {
+                ns.print("caught error. error follows\n");
+                ns.print(e);
+            }
 
             // wellwellwell.
             await ns.sleep(500); // seems risky
