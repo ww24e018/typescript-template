@@ -91,7 +91,7 @@ export async function main(ns) {
             let moneyAvailable = Math.floor(ns.getPlayer().money)
                 - 1.1 * ns.stock.getConstants().StockMarketCommission;
             let maxShares = Math.min(
-                moneyAvailable / ns.stock.getAskPrice(sym),
+                Math.floor(moneyAvailable / ns.stock.getAskPrice(sym)) ,
                 ns.stock.getMaxShares(sym)
             )
             let boughtAtprice = ns.stock.buyStock(sym, maxShares);
@@ -116,9 +116,9 @@ export async function main(ns) {
             for (const position of currentPositions) {
                 let {forecast:forecast, positions:pos, sym:symbol} = position;
 
-                if ((forecast < 0.51) && (pos.positions.longShares > 0)) {
+                if ((forecast < 0.51) && (position.positions.longShares > 0)) {
                     ns.printf(`## selling ${symbol}. reason: forecast somewhat negative (%3.1f)`, forecast);
-                    let price = ns.stock.sellStock(position.sym, pos.positions.longShares)
+                    let price = ns.stock.sellStock(position.sym, position.positions.longShares)
                 }
 
                 /*if ((forecast > 0.49) && (pos.positions.shortShares > 0)) {
