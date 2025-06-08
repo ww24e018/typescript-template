@@ -13,7 +13,8 @@ export async function main(ns) {
     //ns.corporation.getProduct('tobacco','Sector-12', "cig4")
 
     jsontprint(
-        ns.corporation.getDivision('tobacco')
+        //ns.corporation.getDivision('tobacco')
+        ns.corporation.getCorporation().divisions
     )
 
 }

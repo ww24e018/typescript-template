@@ -6,6 +6,17 @@ export async function main(ns) {
     ns.disableLog("disableLog"); ns.disableLog("sleep");
     var corp = ns.corporation.getCorporation();
 
+    function jsontprint(o) {
+        ns.tprintf(JSON.stringify(o,null,"  ")));
+    }
+    function jsonprint(o) {
+        ns.printf(JSON.stringify(o,null,"  "));
+    }
+
+    function readDivisionsAsStringArray() {
+        return ns.corporation.getCorporation().divisions;
+    }
+
     // here it has ns in scope
     function supplyTheWorkers(divisonname, city) {
         let {maxEnergy,maxMorale,avgEnergy,avgMorale} = ns.corporation.getOffice(divisonname, city);
@@ -28,6 +39,15 @@ export async function main(ns) {
         return ns.corporation.getCorporation().funds
     }
 
+    function activateProductsIfNeedBe() {
+        // or actually try setting them all to default, for now.
+        jsonprint(ns.corporation.getCorporation().divisions)
+        for (let division of  readDivisionsAsStringArray()) {
+            jsonprint(division);
+        }
+
+    }
+
     if (corp.divisions.length < 1) ns.printf("no divisions yet");
 
     let [fundsNow, fundsTminus1] = [getCurrentFunds(), getCurrentFunds()];
@@ -41,6 +61,8 @@ export async function main(ns) {
         /*supplyTheWorkers(divisionname, "Sector-12");
         supplyTheWorkers(divisionname, "Aevum");
         supplyTheWorkers(divisionname, "Chongqing");*/
+
+        activateProductsIfNeedBe();
 
         [fundsNow, fundsTminus1] = [getCurrentFunds(), fundsNow];
         let str = ns.formatNumber(fundsNow)
