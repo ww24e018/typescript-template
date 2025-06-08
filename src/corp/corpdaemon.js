@@ -47,8 +47,8 @@ export async function main(ns) {
 
             for (let productName of division.products) {
 
-                for (let city of division.cities) {
-                    ns.corporation.sellProduct(divisionname, city, productName, "PROD", "MP");
+                for (let cityName of division.cities) {
+                    ns.corporation.sellProduct(divisionName, cityName, productName, "PROD", "MP");
                 }
 
             }
