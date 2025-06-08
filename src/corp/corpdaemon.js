@@ -1,5 +1,5 @@
 /** @param {NS} ns */
-import {CityName} from "@ns";
+
 
 
 export async function main(ns) {
@@ -48,7 +48,7 @@ export async function main(ns) {
             for (let productName of division.products) {
 
                 for (let cityName of division.cities) {
-                    ns.corporation.sellProduct(divisionName, cityName, productName, "PROD", "MP");
+                    ns.corporation.sellProduct(divisionName, cityName, productName, "PROD", "MP", true);
                 }
 
             }
