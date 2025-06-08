@@ -41,9 +41,13 @@ export async function main(ns) {
 
     function activateProductsIfNeedBe() {
         // or actually try setting them all to default, for now.
-        jsonprint(ns.corporation.getCorporation().divisions)
-        for (let division of  readDivisionsAsStringArray()) {
-            jsonprint(division);
+        //jsonprint(ns.corporation.getCorporation().divisions)
+        for (let divisionName of  readDivisionsAsStringArray()) {
+            let division = ns.corporation.getDivision(divisionName);
+            //jsonprint(division.products); // seems to be a string array
+            for (let productname of division.products) {
+                //jsonprint(productname);
+            }
         }
 
     }
