@@ -15,7 +15,11 @@ export async function main(ns) {
         let forecasts = [];
         for (let [symid,sym] of symbols.entries().take(symbols.length)) {
             let forecast = ns.stock.getForecast(sym);
-            forecasts.push({sym:sym,forecast:forecast});
+            forecasts.push({
+                sym:sym,
+                forecast:forecast,
+                volatility: ns.stock.getVolatility(sym),
+            });
         }
         forecasts.sort((a,b) => {
             return b.forecast - a.forecast;
@@ -23,13 +27,14 @@ export async function main(ns) {
         return forecasts;
     }
 
+    ns.disableLog("sleep");
     while(true) {
         ns.clearLog();
         let forecasts = readSortedForecasts();
 
 
         forecasts.forEach((f) => {
-            ns.printf("%5s: %6s", f.sym, ns.formatPercent(f.forecast));
+            ns.printf("%5s: %3.2f %5.4f", f.sym, f.forecast, f.volatility);
         });
         //ns.write('datastore2/foobar.txt', JSON.stringify(forecasts),"a");
         await ns.sleep(6000);

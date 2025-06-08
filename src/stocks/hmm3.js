@@ -66,6 +66,9 @@ export async function main(ns) {
     ns.clearLog();
 
     function tryToBuyStuff() {
+        // refuse to consider buying if less than ... 10*10 = 10 billion
+        if (ns.getPlayer().money < (10 ** 8)) return;
+
         let optionsForBuying = readSortedForecasts();
         optionsForBuying = optionsForBuying
             .filter((d) => {
@@ -112,16 +115,20 @@ export async function main(ns) {
 
             for (const position of currentPositions) {
                 let {forecast:forecast, positions:pos, sym:symbol} = position;
-                if (forecast < 0.51) {
+
+                if ((forecast < 0.51) && (pos.positions.longShares > 0)) {
                     ns.printf(`## selling ${symbol}. reason: forecast somewhat negative (%3.1f)`, forecast);
-                    let price = ns.stock.sellStock(position.sym, position.positions.longShares)
+                    let price = ns.stock.sellStock(position.sym, pos.positions.longShares)
                 }
 
+                /*if ((forecast > 0.49) && (pos.positions.shortShares > 0)) {
+                    ns.printf(`## selling ${symbol}. reason: forecast somewhat positive (%3.1f)`, forecast);
+                    let price = ns.stock.sellShort(position.sym, pos.positions.shortShares)
+                }*/
+
             }
 
-            if (ns.getPlayer().money > (10 ** 10)) {
-                tryToBuyStuff()
-            }
+            tryToBuyStuff();
 
         } else {
             // why don't we?
