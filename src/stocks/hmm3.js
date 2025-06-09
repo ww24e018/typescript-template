@@ -14,6 +14,15 @@ export async function main(ns) {
         ns.printf(JSON.stringify(o,null,"  "));
     }
 
+    function nowString() {
+        let nowdate = new Date();
+        let [hour, min, sec, msec] = [nowdate.getHours(), nowdate.getMinutes(), nowdate.getSeconds(), nowdate.getMilliseconds()];
+        let funcPad2 = function (n) {
+            return n.toString().padStart(2, '0')
+        };
+        return `${funcPad2(hour)}:${funcPad2(min)}:${funcPad2(sec)}`;
+    }
+
     let symbols = ns.stock.getSymbols();
 
     function readSortedForecasts() {
@@ -72,7 +81,7 @@ export async function main(ns) {
         let optionsForBuying = readSortedForecasts();
         optionsForBuying = optionsForBuying
             .filter((d) => {
-                return d.forecast > 0.58;
+                return d.forecast > 0.55;
             })
             .filter((d) => {
                 // this is supposed to filter out stuff we already have.
@@ -95,7 +104,7 @@ export async function main(ns) {
                 ns.stock.getMaxShares(sym)
             )
             let boughtAtprice = ns.stock.buyStock(sym, maxShares);
-            ns.printf(`## bought ${sym} reason: forecast is %.3f and volatility = %.4f`,
+            ns.printf(`${nowString()}# buy:  ${sym.padStart(5," ")} forecast %.3f & volat. = %.4f`,
                 forecast, volatility)
         }
     }
@@ -117,7 +126,7 @@ export async function main(ns) {
                 let {forecast:forecast, positions:pos, sym:symbol} = position;
 
                 if ((forecast < 0.51) && (position.positions.longShares > 0)) {
-                    ns.printf(`## selling ${symbol}. reason: forecast somewhat negative (%3.1f)`, forecast);
+                    ns.printf(`${nowString()}# sell: ${symbol.padStart(5," ")} - forecast dropped to %3.1f`, forecast);
                     let price = ns.stock.sellStock(position.sym, position.positions.longShares)
                 }
 
