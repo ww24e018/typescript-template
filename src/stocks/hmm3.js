@@ -126,7 +126,7 @@ export async function main(ns) {
                 let {forecast:forecast, positions:pos, sym:symbol} = position;
 
                 if ((forecast < 0.51) && (position.positions.longShares > 0)) {
-                    ns.printf(`${nowString()}# sell: ${symbol.padStart(5," ")} - forecast dropped to %3.1f`, forecast);
+                    ns.printf(`${nowString()}  sell: ${symbol.padStart(5," ")} - forecast dropped to %3.1f`, forecast);
                     let price = ns.stock.sellStock(position.sym, position.positions.longShares)
                 }
 
