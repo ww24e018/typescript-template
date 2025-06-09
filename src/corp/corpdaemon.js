@@ -70,7 +70,7 @@ export async function main(ns) {
         supplyTheWorkers(divisionname, "Aevum");
         supplyTheWorkers(divisionname, "Chongqing");*/
 
-        activateProductsIfNeedBe();
+        //activateProductsIfNeedBe();
 
         [fundsNow, fundsTminus1] = [getCurrentFunds(), fundsNow];
         let str = ns.formatNumber(fundsNow)
