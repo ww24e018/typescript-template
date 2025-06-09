@@ -75,13 +75,13 @@ export async function main(ns) {
     ns.clearLog();
 
     function tryToBuyStuff() {
-        // refuse to consider buying if less than ... 10*10 = 10 billion
-        if (ns.getPlayer().money < (10 ** 8)) return;
+        // refuse to consider buying if less than ... 10*10 = 10 billion ; 10**8 = 100 million
+        if (ns.getPlayer().money < (10 ** 9)) return;
 
         let optionsForBuying = readSortedForecasts();
         optionsForBuying = optionsForBuying
             .filter((d) => {
-                return d.forecast > 0.55;
+                return d.forecast > 0.62;
             })
             .filter((d) => {
                 // this is supposed to filter out stuff we already have.
