@@ -37,6 +37,8 @@ class Product {
         this.prodQtyHeld = this.productInfo.stored;                  //cityData[this.city][0]
         this.prodQtyProduced = this.productInfo.productionAmount;      //.cityData[this.city][1]
         this.prodQtySold = this.productInfo.actualSellAmount;        //.cityData[this.city][2]
+        if(isNaN(this.prodQtySold) || (this.prodQtySold < 0.001)) this.prodQtySold = 0;
+        ns.tprint(JSON.stringify(this.prodQtySold));
     }
 }
 
@@ -79,10 +81,10 @@ export async function main(ns) {
                 if (myProducts[product].productInfo.developmentProgress < 100) {
                     myProducts[product].setLastAction('In Development | NC')
 
-                } else if (myProducts[product].productInfo.sCost == 'MP'
-                    || myProducts[product].productInfo.sCost == 0
-                    || myProducts[product].productInfo.sCost == null
-                    || myProducts[product].productInfo.sCost == undefined) {
+                } else if (myProducts[product].productInfo.desiredSellPrice == 'MP'
+                    || myProducts[product].productInfo.desiredSellPrice == 0
+                    || myProducts[product].productInfo.desiredSellPrice == null
+                    || myProducts[product].productInfo.desiredSellPrice == undefined) {
                     myProducts[product].setNewProdPrice(ns)
                     myProducts[product].setLastAction('Was MP | set Multi')
                 } else {
