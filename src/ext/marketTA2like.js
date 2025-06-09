@@ -7,7 +7,7 @@ class Product {
         this.lBound = 2;
         this.lastAction = 'None'
         this.division = ns.args[0]
-        this.city = 'Aevum' // city with most production employees..
+        this.city = 'Sector-12' // city with most production employees..
 
     }
     setLastAction(newLastAction) {
@@ -32,11 +32,11 @@ class Product {
 
     }
     update(ns) {
-        this.productInfo = ns.corporation.getProduct(this.division, this.productName)
-        this.curMulti = this.productInfo.sCost.slice(3)
-        this.prodQtyHeld = this.productInfo.cityData[this.city][0]
-        this.prodQtyProduced = this.productInfo.cityData[this.city][1]
-        this.prodQtySold = this.productInfo.cityData[this.city][2]
+        this.productInfo = ns.corporation.getProduct(this.division, this.city, this.productName)
+        this.curMulti = this.productInfo.desiredSellPrice.slice(3)
+        this.prodQtyHeld = this.productInfo.stored;                  //cityData[this.city][0]
+        this.prodQtyProduced = this.productInfo.productionAmount;      //.cityData[this.city][1]
+        this.prodQtySold = this.productInfo.actualSellAmount;        //.cityData[this.city][2]
     }
 }
 
@@ -44,7 +44,7 @@ export async function main(ns) {
     const allCities = ['Aevum', 'Chongqing', 'Sector-12', 'New Tokyo', 'Ishima', 'Volhaven']
     const divToUpgrade = ns.args[0]
     let deBug = false
-    let city = 'Aevum' // Choose city with largest # of employees = lowest price
+    let city = 'Sector-12' // Choose city with largest # of employees = lowest price
     let myProducts = []
     if (divToUpgrade == null || divToUpgrade == undefined) {
         ns.tprint('Must supply Division as argument!! ')
@@ -62,9 +62,11 @@ export async function main(ns) {
         let warehouseInfo = ns.corporation.getWarehouse(divToUpgrade, city)
         let warehousePercentFull = warehouseInfo.sizeUsed / warehouseInfo.size
 
+        //ns.tprint(JSON.stringify(myDiv,null,2));
+
         for (let product of myDiv.products) {
             if (!myProducts.includes(product)) {
-                let newProduct = ns.corporation.getProduct(divToUpgrade, product)
+                let newProduct = ns.corporation.getProduct(divToUpgrade,city, product)
                 if (newProduct.developmentProgress >= 100) {
                     myProducts.push(product)
                     myProducts[product] = new Product(ns, product)
