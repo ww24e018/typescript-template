@@ -104,7 +104,7 @@ export async function main(ns) {
                 ns.stock.getMaxShares(sym)
             )
             let boughtAtprice = ns.stock.buyStock(sym, maxShares);
-            ns.printf(`${nowString()}# buy:  ${sym.padStart(5," ")} forecast %.3f & volat. = %.4f`,
+            ns.printf(`${nowString()}  buy:  ${sym.padStart(5," ")} forecast %.3f & volat. = %.4f`,
                 forecast, volatility)
         }
     }
