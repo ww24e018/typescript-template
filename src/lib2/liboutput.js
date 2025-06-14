@@ -13,8 +13,8 @@ function getNS() {
     }
 }
 
-export function jsontprint(o) {
-    getNS().tprintf(JSON.stringify(o));
+export function jsontprint(o, f="") {
+    getNS().tprintf(JSON.stringify(o,null,f));
 }
 export function jsonprint(o) {
     getNS().printf(JSON.stringify(o,null,"  "));
