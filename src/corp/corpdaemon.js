@@ -51,6 +51,13 @@ export async function main(ns) {
                     ns.corporation.sellProduct(divisionName, cityName, productName, "MAX", "MP", true);
                 }
 
+                if (ns.corporation.hasResearched(divisionName,"Market-TA.I")) {
+                    ns.corporation.setProductMarketTA1(divisionName, productName, true);
+                }
+                if (ns.corporation.hasResearched(divisionName,"Market-TA.II")) {
+                    ns.corporation.setProductMarketTA2(divisionName, productName, true);
+                }
+
             }
         }
 
@@ -70,7 +77,7 @@ export async function main(ns) {
         supplyTheWorkers(divisionname, "Aevum");
         supplyTheWorkers(divisionname, "Chongqing");*/
 
-        //activateProductsIfNeedBe();
+        activateProductsIfNeedBe();
 
         [fundsNow, fundsTminus1] = [getCurrentFunds(), fundsNow];
         let str = ns.formatNumber(fundsNow)

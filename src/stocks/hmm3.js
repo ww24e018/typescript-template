@@ -81,7 +81,7 @@ export async function main(ns) {
         let optionsForBuying = readSortedForecasts();
         optionsForBuying = optionsForBuying
             .filter((d) => {
-                return d.forecast > 0.62;
+                return d.forecast > 0.59;
             })
             .filter((d) => {
                 // this is supposed to filter out stuff we already have.
