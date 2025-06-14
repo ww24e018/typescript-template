@@ -13,8 +13,9 @@ export async function main(ns) {
     //ns.corporation.getProduct('tobacco','Sector-12', "cig4")
 
     jsontprint(
-        //ns.corporation.getDivision('tobacco')
-        ns.corporation.getCorporation().divisions
-    )
+        ns.corporation.getOfficeSizeUpgradeCost('tobacco', 'New Tokyo', 1)
+
+    );
+    //ns.corporation.upgradeOfficeSize('tobacco', 'New Tokyo', 1);
 
 }
