@@ -16,8 +16,8 @@ function getNS() {
 export function jsontprint(o, f="") {
     getNS().tprintf(JSON.stringify(o,null,f));
 }
-export function jsonprint(o) {
-    getNS().printf(JSON.stringify(o,null,"  "));
+export function jsonprint(o, f="") {
+    getNS().printf(JSON.stringify(o,null,f));
 }
 
 export function nowString() {
