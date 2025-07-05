@@ -116,12 +116,12 @@ export async function main(ns) {
             } else {
                 const money = ns.getServerMoneyAvailable("home");
                 if (state > 0) {
-                    const sharesToBuy = Math.min(10000, ns.stock.getMaxShares(sym), Math.floor((money - commission) / askPrice));
+                    const sharesToBuy = Math.min(30000, ns.stock.getMaxShares(sym), Math.floor((money - commission) / askPrice));
                     if (ns.stock.buyStock(sym, sharesToBuy) > 0) {
                         ns.print(`BOUGHT (long) ${sym}.`);
                     }
                 } else if (state < 0) {
-                    const sharesToBuy = Math.min(10000, ns.stock.getMaxShares(sym), Math.floor((money - commission) / bidPrice));
+                    const sharesToBuy = Math.min(30000, ns.stock.getMaxShares(sym), Math.floor((money - commission) / bidPrice));
                     if (ns.stock.buyShort(sym, sharesToBuy) > 0) {
                         ns.print(`BOUGHT (short) ${sym}.`);
                     }
