@@ -25,15 +25,21 @@ export async function main(ns) {
 
     let symbols = ns.stock.getSymbols();
 
+    function calculateScore(forecast, volatility) {
+        return (forecast-0.50)*volatility*1000;
+    }
+
     function readSortedForecasts() {
         let symbols = ns.stock.getSymbols();
         let forecasts = [];
         for (let [symid,sym] of symbols.entries().take(symbols.length)) {
             let forecast = ns.stock.getForecast(sym);
+            let volatility = ns.stock.getVolatility(sym);
             forecasts.push({
                 sym:sym,
                 forecast:forecast,
-                volatility: ns.stock.getVolatility(sym),
+                volatility: volatility,
+                score: calculateScore(forecast, volatility)
             });
         }
         forecasts.sort((a,b) => {
@@ -81,7 +87,7 @@ export async function main(ns) {
         let optionsForBuying = readSortedForecasts();
         optionsForBuying = optionsForBuying
             .filter((d) => {
-                return d.forecast > 0.61;
+                return d.forecast > 0.59;
             })
             .filter((d) => {
                 // this is supposed to filter out stuff we already have.
@@ -89,23 +95,23 @@ export async function main(ns) {
             })
         ;
         optionsForBuying.sort((a, b) => {
-            return b.volatility - a.volatility
+            return b.score - a.score
         })
 
         if (optionsForBuying.length > 0) {
             let chosenOption = optionsForBuying[0];
 
-            let {sym, forecast, volatility} = chosenOption;
+            let {sym, forecast, volatility, score} = chosenOption;
             // how many to buy
             let moneyAvailable = Math.floor(ns.getPlayer().money)
-                - 1.1 * ns.stock.getConstants().StockMarketCommission;
+                - 1.1 * ns.stock.getConstants().StockMarketCommission - 200000;
             let maxShares = Math.min(
                 Math.floor(moneyAvailable / ns.stock.getAskPrice(sym)) ,
                 ns.stock.getMaxShares(sym)
             )
             let boughtAtprice = ns.stock.buyStock(sym, maxShares);
-            ns.printf(`${nowString()}  buy:  ${sym.padStart(5," ")} forecast %.3f & volat. = %.4f`,
-                forecast, volatility)
+            ns.printf(`${nowString()}  buy:  ${sym.padStart(5," ")} fc %.3f & vol. = %.4f & score = %.4f`,
+                forecast, volatility, score)
         }
     }
 
