@@ -1,6 +1,9 @@
 /** @param {NS} ns */
 
-
+const {moneyReserveForTravel, minimumMoneyChunkToBuy} ={
+    moneyReserveForTravel: 200000,
+    minimumMoneyChunkToBuy: 10**8 // 10*10 = 10 billion ; 10**8 = 100 million
+}
 
 export async function main(ns) {
 
@@ -81,8 +84,8 @@ export async function main(ns) {
     ns.clearLog();
 
     function tryToBuyStuff() {
-        // refuse to consider buying if less than ... 10*10 = 10 billion ; 10**8 = 100 million
-        if (ns.getPlayer().money < (10 ** 8)) return;
+        // refuse to consider buying if less than ...for const, see above
+        if (ns.getPlayer().money < minimumMoneyChunkToBuy) return;
 
         let optionsForBuying = readSortedForecasts();
         optionsForBuying = optionsForBuying
@@ -104,13 +107,48 @@ export async function main(ns) {
             let {sym, forecast, volatility, score} = chosenOption;
             // how many to buy
             let moneyAvailable = Math.floor(ns.getPlayer().money)
-                - 1.1 * ns.stock.getConstants().StockMarketCommission - 200000;
+                - 1.1 * ns.stock.getConstants().StockMarketCommission - moneyReserveForTravel;
             let maxShares = Math.min(
                 Math.floor(moneyAvailable / ns.stock.getAskPrice(sym)) ,
                 ns.stock.getMaxShares(sym)
             )
             let boughtAtprice = ns.stock.buyStock(sym, maxShares);
             ns.printf(`${nowString()}  buy:  ${sym.padStart(5," ")} fc %.3f & vol. = %.4f & score = %.4f`,
+                forecast, volatility, score)
+        }
+    }
+
+    function tryToBuyStuffButShort() {
+        // refuse to consider buying if less than ...for const, see above
+        if (ns.getPlayer().money < minimumMoneyChunkToBuy) return;
+
+        let optionsForBuying = readSortedForecasts();
+        optionsForBuying = optionsForBuying
+            .filter((d) => {
+                return d.forecast < 0.41;
+            })
+            .filter((d) => {
+                // this is supposed to filter out stuff we already have.
+                return !ns.stock.getPosition(d.sym).some((i) => i != 0);
+            })
+        ;
+        optionsForBuying.sort((a, b) => {
+            return a.score - b.score
+        })
+
+        if (optionsForBuying.length > 0) {
+            let chosenOption = optionsForBuying[0];
+
+            let {sym, forecast, volatility, score} = chosenOption;
+            // how many to buy
+            let moneyAvailable = Math.floor(ns.getPlayer().money)
+                - 1.1 * ns.stock.getConstants().StockMarketCommission - moneyReserveForTravel;
+            let maxShares = Math.min(
+                Math.floor(moneyAvailable / ns.stock.getAskPrice(sym)) ,
+                ns.stock.getMaxShares(sym)
+            )
+            let boughtAtprice = ns.stock.buyShort(sym, maxShares);
+            ns.printf(`${nowString()}  buyShort:  ${sym.padStart(5," ")} fc %.3f & vol. = %.4f & score = %.4f`,
                 forecast, volatility, score)
         }
     }
@@ -135,6 +173,10 @@ export async function main(ns) {
                     ns.printf(`${nowString()}  sell: ${symbol.padStart(5," ")} - forecast dropped to %3.1f`, forecast);
                     let price = ns.stock.sellStock(position.sym, position.positions.longShares)
                 }
+                if ((forecast > 0.49) && (position.positions.shortShares > 0)) {
+                    ns.printf(`${nowString()}  sellShort: ${symbol.padStart(5," ")} - forecast went to %3.1f`, forecast);
+                    let price = ns.stock.sellShort(position.sym, position.positions.shortShares)
+                }
 
                 /*if ((forecast > 0.49) && (pos.positions.shortShares > 0)) {
                     ns.printf(`## selling ${symbol}. reason: forecast somewhat positive (%3.1f)`, forecast);
@@ -144,10 +186,12 @@ export async function main(ns) {
             }
 
             tryToBuyStuff();
+            tryToBuyStuffButShort();
 
         } else {
             // why don't we?
             tryToBuyStuff();
+            tryToBuyStuffButShort()
         }
 
 
